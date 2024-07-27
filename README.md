@@ -31,13 +31,12 @@ Create a file called `.env` based on file `.env.example`
 - Add "Authorized JavaScript origins" like "http://127.0.0.1:5000"
 - Add "Authorized redirect URIs" like "https://davidgarzonv.github.io/local-music-manager-auth"
 - Save and store generated credentials.
-- Update `.env` file adding the generated values for variables **(CLIENT_ID, PROJECT_ID, CLIENT_SECRET)**
-- The configuration can be located in path `app/config.py`
 
 **Remember that you have a quota for development applications**:
 
 - https://support.google.com/cloud/answer/7454865?sjid=15998940582297245958-NA
 - https://support.google.com/cloud/answer/9028764
+
 
 ## Run the application
 
@@ -65,10 +64,17 @@ deactivate
 py entrypoint.py
 ```
 
+## Configure the application
+
+- Configuration is required before using the api
+
+1. Call the endpoint `api/v1/auth/configure` with the configured data created in the previous step.
+2. Test any endpoint that uses Youtube Music, like "Get Playlists"
+3. If the process was successful you will be able to see the answer with the playlists of your Youtube Music profile.
+
 ### API Documentation
 
 [Swagger documentation](docs/collection.swagger.yaml)
-
 
 ## Package the application into an executable:
 

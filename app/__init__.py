@@ -10,7 +10,7 @@ from app.modules.local_files.api_v1.resources import localfiles_v1_bp
 from app.modules.songs.api_v1.resources import songs_v1_bp
 from app.modules.auth.api_v1.resources import auth_v1_bp
 from flask_cors import CORS
-from app.common.interceptors import token_required
+from app.common.interceptors import configure_required, token_required
 from app.config import CREDENTIALS_FILE, ENABLED_ORIGIN, OAUTH_FILE, SECRET_KEY
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -63,6 +63,8 @@ def create_app():
     # Registers global interceptors
     register_global_interceptors(app)
 
+    print('Application started')
+
     return app
 
 
@@ -96,6 +98,7 @@ def register_error_handlers(app):
 
 def register_global_interceptors(app):
     @app.before_request
+    @configure_required
     @token_required
     def before_request_func():
         pass

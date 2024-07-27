@@ -20,11 +20,7 @@ a = Analysis(
         (
             "./app/logs",
             "app/logs",
-        ),
-        (
-            "./env/Lib/site-packages/ytmusicapi/locales",
-            "ytmusicapi/locales",
-        ),
+        )
     ],
     hiddenimports=[],
     hookspath=[],

@@ -13,3 +13,4 @@ python-dotenv
 platformdirs
 waitress
 virtualenv
+pyinstaller

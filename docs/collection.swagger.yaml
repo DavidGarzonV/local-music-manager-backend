@@ -141,6 +141,26 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /api/v1/auth/configure:
+    post:
+      tags:
+        - Auth
+      summary: Configure the project with the Google OAuth Credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                client_id: '1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com'
+                client_secret: 'abcdefghijklmnopqrstuvwxyz'
+                project_id: 'local-music-manager'
+                redirect_uri: 'https://davidgarzonv.github.io/local-music-manager-auth'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
   /api/v1/auth/login:
     post:
       tags:

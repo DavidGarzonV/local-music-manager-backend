@@ -2,6 +2,7 @@ from flask import request, Blueprint
 from google_auth_oauthlib import flow
 from app.common.code_logger import APP_LOGGER
 from app.common.credentials import credentials_to_dict, save_credentials
+from app.common.utils import get_env_path
 from app.common.yt_music import check_connection
 from app.config import REDIRECT_URI
 from app.common.jwt import generate_jwt_token, validate_jwt_token
@@ -18,6 +19,43 @@ from app.config import OAUTH_FILE, GOOGLE_SCOPES, CLIENT_CONFIG
 
 # AUTH ROUTES
 auth_v1_bp = Blueprint("auth_v1_bp", __name__)
+
+
+@auth_v1_bp.route("/configure", methods=["POST"])
+def configure():
+    data = request.get_json()
+    CLIENT_ID = data.get("client_id")
+    PROJECT_ID = data.get("project_id")
+    CLIENT_SECRET = data.get("client_secret")
+    REDIRECT_URI = data.get("redirect_uri")
+
+    if (
+        CLIENT_ID is None
+        or len(CLIENT_ID) == 0
+        or CLIENT_ID == ""
+        or PROJECT_ID is None
+        or len(PROJECT_ID) == 0
+        or PROJECT_ID == ""
+        or CLIENT_SECRET is None
+        or len(CLIENT_SECRET) == 0
+        or CLIENT_SECRET == ""
+        or REDIRECT_URI is None
+        or len(REDIRECT_URI) == 0
+        or REDIRECT_URI == ""
+    ):
+        return {"Success": False, "Error": "Missing required fields"}, 400
+
+    with open(get_env_path(), "r") as fp:
+        data = fp.read()
+        data_env = data.replace('CLIENT_ID=""', 'CLIENT_ID="' + CLIENT_ID + '"')
+        data_env = data_env.replace('PROJECT_ID=""', 'PROJECT_ID="' + PROJECT_ID + '"')
+        data_env = data_env.replace('CLIENT_SECRET=""', 'CLIENT_SECRET="' + CLIENT_SECRET + '"')
+        data_env = data_env.replace('REDIRECT_URI=""', 'REDIRECT_URI="' + REDIRECT_URI + '"')
+
+    with open(get_env_path(), "w") as fp:
+        fp.write(data_env)
+
+    return {"Success": True}
 
 
 @auth_v1_bp.route("/login", methods=["POST"])
