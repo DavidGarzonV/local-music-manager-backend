@@ -83,11 +83,11 @@ py entrypoint.py
 Execute the command:
 
 ```bash
-pyinstaller entrypoint.spec
+pyinstaller entrypoint.spec --clean
 ```
 
-The application will be located at: `dist/entrypoint/local-music-manager-bg.exe`
-- It is important to keep the `_internal` folder along with the executable
+The application will be located at: `dist/entrypoint/localmusicmanager.exe`
+- It is important to keep the `_internal` folder along with the executable for it's use.
 
 ---
 
