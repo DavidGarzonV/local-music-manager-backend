@@ -1,0 +1,17 @@
+# config files
+app/config_files/oauth.json
+app/config_files/credentials.json
+app/config_files/client_secret.json
+
+# cache folders
+__pycache__
+
+# Dist folders and environments
+.env
+env/
+dist/
+build/
+.vscode/
+
+# Logs
+*.log

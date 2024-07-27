@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: LOCAL MUSIC MANAGER - API
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:5000
+components:
+  securitySchemes:
+    noauthAuth:
+      type: http
+      scheme: noauth
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: Playlists
+  - name: Local Files
+  - name: Songs
+  - name: Auth
+paths:
+  /api/v1/playlists:
+    get:
+      tags:
+        - Playlists
+      summary: Get Playlists
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Playlists
+      summary: Create Playlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Global Music
+                description: ''
+                privacyStatus: PRIVATE
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/playlists/{id}:
+    get:
+      tags:
+        - Playlists
+      summary: Get Playlist
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+          example: PLmdUBVgDeFM0YbishmMv1yOAaeFJDphhD
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/local-files:
+    get:
+      tags:
+        - Local Files
+      summary: Get Local Files
+      parameters:
+        - name: directory
+          in: query
+          description: Directory path to search files in url encoded format
+          schema:
+            type: string
+          example: D%3A%5CMusic%5CElectr%C3%B3nic
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/songs/search-songs:
+    post:
+      tags:
+        - Songs
+      summary: Search songs based on the search of local-files endpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                songs:
+                  - identifier: 24
+                    title: Addicted To You
+                    artist: Avicci
+                    originalName: Avicii - Addicted To You.mp3
+                    completePath: >-
+                      D:\Music\Electronic\Avicii - Addicted To You.mp3
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/songs/{songId}:
+    get:
+      parameters:
+        - name: songId
+          in: path
+          schema:
+            type: string
+          required: true
+          example: HKNqyiV38ss
+      tags:
+        - Songs
+      summary: Get song
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/songs/save-songs:
+    post:
+      tags:
+        - Songs
+      summary: Save Songs to Playlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                playlist_id: PLmdUBVgDeFx0YbishmMv1yOAaeFJDphhD
+                enable_duplicates: false
+                songs:
+                  - HKNqyiV38ss
+                  - '-kBrnF-9d3M'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Get Auth url
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/auth/session:
+    post:
+      tags:
+        - Auth
+      summary: Create session
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                code: >-
+                  4/0AfJohXltht-sTssZCqIAwnB9jXKxA4bcsFtTsN6nQrvA9_LvFDdqmLjVhbEpNh4gyZVOEQ
+                state: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cC6DkpXVCJ9.eyJleHAiOjE3Mzg3ODc3MDR9.mJQjd3PfaNb_OCplHfgYIwa-xP8IgiTPnbYwVxVDhk8
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                Success: true
+                Response:
+                  refresh_token: "1//0gj"
+                  expires_in: 3599
+  /api/v1/auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Refresh token
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/auth/check:
+    post:
+      tags:
+        - Auth
+      summary: Check auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                accessToken: 'eyJhbGciOi'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
