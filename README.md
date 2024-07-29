@@ -64,13 +64,22 @@ deactivate
 py entrypoint.py
 ```
 
-## Configure the application
+## Google OAuth Configuration
 
-- Configuration is required before using the api
+### This is required to use the api
+
+Modify `.env` file to add manually the Google OAuth variables:
+- CLIENT_ID
+- PROJECT_ID
+- CLIENT_SECRET
+- REDIRECT_URI
+
+Or:
 
 1. Call the endpoint `api/v1/auth/configure` with the configured data created in the previous step.
-2. Test any endpoint that uses Youtube Music, like "Get Playlists"
-3. If the process was successful you will be able to see the answer with the playlists of your Youtube Music profile.
+2. Close the executing process and start again to apply changes.
+3. Test any endpoint that uses Youtube Music, like "Get Playlists"
+4. If the process was successful you will be able to see the answer with the playlists of your Youtube Music profile.
 
 ### API Documentation
 

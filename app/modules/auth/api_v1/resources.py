@@ -1,5 +1,6 @@
 from flask import request, Blueprint
 from google_auth_oauthlib import flow
+import re
 from app.common.code_logger import APP_LOGGER
 from app.common.credentials import credentials_to_dict, save_credentials
 from app.common.utils import get_env_path
@@ -46,11 +47,11 @@ def configure():
         return {"Success": False, "Error": "Missing required fields"}, 400
 
     with open(get_env_path(), "r") as fp:
-        data = fp.read()
-        data_env = data.replace('CLIENT_ID=""', 'CLIENT_ID="' + CLIENT_ID + '"')
-        data_env = data_env.replace('PROJECT_ID=""', 'PROJECT_ID="' + PROJECT_ID + '"')
-        data_env = data_env.replace('CLIENT_SECRET=""', 'CLIENT_SECRET="' + CLIENT_SECRET + '"')
-        data_env = data_env.replace('REDIRECT_URI=""', 'REDIRECT_URI="' + REDIRECT_URI + '"')
+        data_env = fp.read()
+        data_env = re.sub(r'(CLIENT_ID=)["\'].*?["\']', r'\1"{}"'.format(CLIENT_ID), data_env)
+        data_env = re.sub(r'(PROJECT_ID=)["\'].*?["\']', r'\1"{}"'.format(PROJECT_ID), data_env)
+        data_env = re.sub(r'(CLIENT_SECRET=)["\'].*?["\']', r'\1"{}"'.format(CLIENT_SECRET), data_env)
+        data_env = re.sub(r'(REDIRECT_URI=)["\'].*?["\']', r'\1"{}"'.format(REDIRECT_URI), data_env)
 
     with open(get_env_path(), "w") as fp:
         fp.write(data_env)
