@@ -67,6 +67,6 @@ CLIENT_CONFIG = {
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_secret": CLIENT_SECRET,
         "redirect_uris": [REDIRECT_URI],
-        "javascript_origins": ["http://127.0.0.1:" + str(APP_PORT)],
+        "javascript_origins": [ENABLED_ORIGIN],
     }
 }

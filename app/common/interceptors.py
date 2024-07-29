@@ -65,6 +65,14 @@ def validate_token(token: str):
 def configure_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        if request.method == "OPTIONS":
+            response = make_response("OK", 200)
+            response.headers.add_header(
+                "Access-Control-Allow-Headers", "Authorization, Content-Type"
+            )
+
+            return response
+
         if request.endpoint is not None:
             current_resource = request.endpoint.split(".")[1]
 
