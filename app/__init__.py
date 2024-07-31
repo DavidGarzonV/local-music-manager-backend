@@ -1,5 +1,4 @@
 from datetime import timedelta
-import sys
 import traceback
 from flask import Flask, jsonify
 from app.common.code_logger import APP_LOGGER
@@ -12,8 +11,6 @@ from app.modules.auth.api_v1.resources import auth_v1_bp
 from flask_cors import CORS
 from app.common.interceptors import configure_required, token_required
 from app.config import CREDENTIALS_FILE, ENABLED_ORIGIN, OAUTH_FILE, SECRET_KEY
-
-sys.stdout.reconfigure(encoding="utf-8")
 
 def create_config_files(oauth_file, credentials_file):
     try:
