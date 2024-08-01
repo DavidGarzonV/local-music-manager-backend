@@ -1,14 +1,12 @@
 from flask import request, Blueprint
 from google_auth_oauthlib import flow
-import re
 from app.common.code_logger import APP_LOGGER
 from app.common.credentials import credentials_to_dict, save_credentials
-from app.common.utils import get_env_path
 from app.common.yt_music import check_connection
-from app.config import REDIRECT_URI
 from app.common.jwt import generate_jwt_token, validate_jwt_token
 from app.common.json import (
     load_data_from_json,
+    save_data_to_json,
 )
 from app.modules.auth.api_v1.utils import (
     refresh_token_from_session,
@@ -16,51 +14,51 @@ from app.modules.auth.api_v1.utils import (
     handle_login_response,
     reset_login,
 )
-from app.config import OAUTH_FILE, GOOGLE_SCOPES, CLIENT_CONFIG
+from app.config import CONFIGURATION_FILE, OAUTH_FILE, GOOGLE_SCOPES, get_client_config
 
 # AUTH ROUTES
 auth_v1_bp = Blueprint("auth_v1_bp", __name__)
 
-
 @auth_v1_bp.route("/configure", methods=["POST"])
 def configure():
     data = request.get_json()
-    CLIENT_ID = data.get("client_id")
-    PROJECT_ID = data.get("project_id")
-    CLIENT_SECRET = data.get("client_secret")
-    REDIRECT_URI = data.get("redirect_uri")
+    client_id = data.get("client_id")
+    project_id = data.get("project_id")
+    client_secret = data.get("client_secret")
+    redirect_uri = data.get("redirect_uri")
 
     if (
-        CLIENT_ID is None
-        or len(CLIENT_ID) == 0
-        or CLIENT_ID == ""
-        or PROJECT_ID is None
-        or len(PROJECT_ID) == 0
-        or PROJECT_ID == ""
-        or CLIENT_SECRET is None
-        or len(CLIENT_SECRET) == 0
-        or CLIENT_SECRET == ""
-        or REDIRECT_URI is None
-        or len(REDIRECT_URI) == 0
-        or REDIRECT_URI == ""
+        client_id is None
+        or len(client_id) == 0
+        or client_id == ""
+        or project_id is None
+        or len(project_id) == 0
+        or project_id == ""
+        or client_secret is None
+        or len(client_secret) == 0
+        or client_secret == ""
+        or redirect_uri is None
+        or len(redirect_uri) == 0
+        or redirect_uri == ""
     ):
         return {"Success": False, "Error": "Missing required fields"}, 400
 
-    with open(get_env_path(), "r") as fp:
-        data_env = fp.read()
-        data_env = re.sub(r'(CLIENT_ID=)["\'].*?["\']', r'\1"{}"'.format(CLIENT_ID), data_env)
-        data_env = re.sub(r'(PROJECT_ID=)["\'].*?["\']', r'\1"{}"'.format(PROJECT_ID), data_env)
-        data_env = re.sub(r'(CLIENT_SECRET=)["\'].*?["\']', r'\1"{}"'.format(CLIENT_SECRET), data_env)
-        data_env = re.sub(r'(REDIRECT_URI=)["\'].*?["\']', r'\1"{}"'.format(REDIRECT_URI), data_env)
-
-    with open(get_env_path(), "w") as fp:
-        fp.write(data_env)
+    configuation_data = {
+        "CLIENT_ID": client_id,
+        "PROJECT_ID": project_id,
+        "CLIENT_SECRET": client_secret,
+        "REDIRECT_URI": redirect_uri,
+    }
+    save_data_to_json(configuation_data, CONFIGURATION_FILE)
 
     return {"Success": True}
 
 
 @auth_v1_bp.route("/login", methods=["POST"])
 def get_login():
+    CLIENT_CONFIG = get_client_config()
+    REDIRECT_URI = CLIENT_CONFIG["web"]["redirect_uris"][0]
+
     google_flow = flow.Flow.from_client_config(
         client_config=CLIENT_CONFIG,
         scopes=GOOGLE_SCOPES,
@@ -102,6 +100,8 @@ def create_session():
         }, 400
 
     try:
+        CLIENT_CONFIG = get_client_config()
+        REDIRECT_URI = CLIENT_CONFIG["web"]["redirect_uris"][0]
         google_flow = flow.Flow.from_client_config(
             client_config=CLIENT_CONFIG,
             scopes=GOOGLE_SCOPES,
@@ -110,7 +110,9 @@ def create_session():
         response = google_flow.fetch_token(code=code)
 
         credentials = google_flow.credentials
-        save_credentials(credentials_to_dict(credentials))
+        saved = save_credentials(credentials_to_dict(credentials))
+        if not saved:
+            return {"Success": False}, 500
 
         return handle_login_response(response)
     except Exception as e:

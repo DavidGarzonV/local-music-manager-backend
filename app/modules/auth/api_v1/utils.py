@@ -35,15 +35,17 @@ def create_login_token():
 
 
 def handle_login_response(response):
-    save_data_to_json(response, OAUTH_FILE)
-    login_token = create_login_token()
+    login_token = ""
+    saved = save_data_to_json(response, OAUTH_FILE)
+    if saved:
+        login_token = create_login_token()
 
     return {
-        "Success": True,
+        "Success": saved,
         "Response": {
             "access_token": login_token,
         },
-    }
+    }, 200 if saved else 400
 
 
 def create_session_from_file():

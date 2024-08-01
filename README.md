@@ -6,10 +6,22 @@ The app uses the library [ytmusicapi](https://ytmusicapi.readthedocs.io/en/stabl
 
 ## Necessary Installations
 
-### Create environment (Optional):
+### Create a local environment:
 
 ```bash
 virtualenv env
+```
+
+**Execute environment:**
+
+Windows:
+```bash
+cd .venv/Scripts/ & activate.bat & cd ../../
+```
+
+Linux:
+```bash
+source .venv/Scripts/activate
 ```
 
 ### Install dependencies:
@@ -19,7 +31,13 @@ pip install -r requirements.txt
 ```
 ### Create a environment file:
 
-Create a file called `.env` based on file `.env.example`
+Create a root file called `.env` based on file `.env.example`
+
+## Run the application
+
+```bash
+py entrypoint.py
+```
 
 ### To configure the authentication on Google
 
@@ -37,49 +55,11 @@ Create a file called `.env` based on file `.env.example`
 - https://support.google.com/cloud/answer/7454865?sjid=15998940582297245958-NA
 - https://support.google.com/cloud/answer/9028764
 
-
-## Run the application
-
-### With environment (Optional)
-
-**Execute environment:**
-
-```bash
-env\Scripts\activate.bat
-```
-
-```bash
-source env/bin/activate
-```
-
 **Disable environment:**
 
 ```bash
 deactivate
 ```
-
-## To run the application:
-
-```bash
-py entrypoint.py
-```
-
-## Google OAuth Configuration
-
-### This is required to use the api
-
-Modify `.env` file to add manually the Google OAuth variables:
-- CLIENT_ID
-- PROJECT_ID
-- CLIENT_SECRET
-- REDIRECT_URI
-
-Or:
-
-1. Call the endpoint `api/v1/auth/configure` with the configured data created in the previous step.
-2. Close the executing process and start again to apply changes.
-3. Test any endpoint that uses Youtube Music, like "Get Playlists"
-4. If the process was successful you will be able to see the answer with the playlists of your Youtube Music profile.
 
 ### API Documentation
 

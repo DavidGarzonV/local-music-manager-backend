@@ -2,7 +2,9 @@ from datetime import timedelta
 import traceback
 from flask import Flask, jsonify
 from app.common.code_logger import APP_LOGGER
+from app.common.environments import ENABLED_ORIGIN, SECRET_KEY
 from app.common.error_handling import UnauthorizedException
+from app.config import CONFIGURATION_FILE, CREDENTIALS_FILE, OAUTH_FILE
 from app.modules.auth.api_v1.utils import reset_login
 from app.modules.playlists.api_v1.resources import playlists_v1_bp
 from app.modules.local_files.api_v1.resources import localfiles_v1_bp
@@ -10,9 +12,8 @@ from app.modules.songs.api_v1.resources import songs_v1_bp
 from app.modules.auth.api_v1.resources import auth_v1_bp
 from flask_cors import CORS
 from app.common.interceptors import configure_required, token_required
-from app.config import CREDENTIALS_FILE, ENABLED_ORIGIN, OAUTH_FILE, SECRET_KEY
 
-def create_config_files(oauth_file, credentials_file):
+def create_config_files(oauth_file, credentials_file, configuration_file):
     try:
         f = open(oauth_file, 'x')
         f.write("{}")
@@ -25,9 +26,13 @@ def create_config_files(oauth_file, credentials_file):
     except Exception:
         APP_LOGGER.info('Credentials file already exists')
 
-def create_app():
-    create_config_files(OAUTH_FILE, CREDENTIALS_FILE)
+    try:
+        f = open(configuration_file, 'x')
+        f.write("{}")
+    except Exception:
+        APP_LOGGER.info('Configuration file already exists')
 
+def create_app():
     app = Flask(__name__)
     CORS(
         app,
@@ -59,6 +64,8 @@ def create_app():
 
     # Registers global interceptors
     register_global_interceptors(app)
+
+    create_config_files(OAUTH_FILE, CREDENTIALS_FILE, CONFIGURATION_FILE)
 
     print('Application started')
 

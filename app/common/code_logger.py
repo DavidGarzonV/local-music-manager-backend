@@ -1,9 +1,7 @@
 import logging
 import datetime as dt
 import os
-
-from app.config import IS_DEVELOPMENT
-
+from app.common.environments import IS_DEVELOPMENT
 
 folder = os.path.join(os.path.dirname(__file__), "../logs/")
 if not os.path.exists(folder):
@@ -12,16 +10,14 @@ if not os.path.exists(folder):
 current_date = dt.date.today()
 
 # create logger
-filename = os.path.join(
-    os.path.dirname(__file__), "../logs/" + current_date.strftime("%w%m%Y") + ".log"
-)
-
 logger_level = logging.ERROR
 if IS_DEVELOPMENT:
     logger_level = logging.DEBUG
-else:
-    logging.basicConfig(filename=filename, encoding="utf-8", level=logger_level)
 
+filename = os.path.join(
+    os.path.dirname(__file__), "../logs/" + current_date.strftime("%d%m%Y") + ".log"
+)
+logging.basicConfig(filename=filename, encoding="utf-8", level=logger_level)
 APP_LOGGER = logging.getLogger("local-music-manager")
 APP_LOGGER.setLevel(logger_level)
 

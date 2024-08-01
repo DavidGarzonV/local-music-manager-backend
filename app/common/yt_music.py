@@ -1,17 +1,19 @@
 from ytmusicapi import YTMusic
 from app.common.code_logger import APP_LOGGER
+from app.common.environments import IS_DEVELOPMENT
 from app.common.error_handling import UnauthorizedException
 from app.common.utils import validateStringSimilarity
-from app.config import (
-    OAUTH_FILE,
-)
+from app.config import OAUTH_FILE
 from app.modules.auth.api_v1.utils import refresh_token_from_session
 
 similarity_ratio = 0.6
 
-def catch_ytmusic_exceptions(exception):
-    APP_LOGGER.error("Error YTMusic: ")
+def catch_ytmusic_exceptions(exception: Exception):
     error_reason = exception.args[0]
+
+    if IS_DEVELOPMENT:
+        APP_LOGGER.error("Error YTMusic:")
+        APP_LOGGER.error(exception)
 
     if "HTTP 401" in error_reason:
         APP_LOGGER.error("HTTP 401: Unauthorized.")

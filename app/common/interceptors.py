@@ -1,10 +1,10 @@
 from flask import request, make_response
 from functools import wraps
-import re
 from app.common.credentials import validate_credentials
+from app.common.json import load_data_from_json
 from app.common.jwt import validate_jwt_token
-from app.common.utils import get_env_path
 from app.common.yt_music import check_connection
+from app.config import CONFIGURATION_FILE
 from app.modules.auth.api_v1.utils import reset_login
 
 def token_required(f):
@@ -78,24 +78,18 @@ def configure_required(f):
 
             if current_resource != "configure":
                 is_not_configured = False
-                with open(get_env_path(), "r") as fp:
-                    data = fp.read()
-
-                    pattern = re.compile(r'(\w+)=["\'](.*?)["\']')
-                    matches = pattern.findall(data)
-                    config_dict = {key: value for key, value in matches}
-
-                    if (
-                        "CLIENT_ID" not in data
-                        or config_dict.get("CLIENT_ID") == ""
-                        or "CLIENT_SECRET" not in data
-                        or config_dict.get("CLIENT_SECRET") == ""
-                        or "PROJECT_ID" not in data
-                        or config_dict.get("PROJECT_ID") == ""
-                        or "REDIRECT_URI" not in data
-                        or config_dict.get("REDIRECT_URI") == ""
-                    ):
-                        is_not_configured = True
+                configuration_data = load_data_from_json(CONFIGURATION_FILE)
+                if (
+                    "CLIENT_ID" not in configuration_data
+                    or configuration_data.get("CLIENT_ID") == ""
+                    or "CLIENT_SECRET" not in configuration_data
+                    or configuration_data.get("CLIENT_SECRET") == ""
+                    or "PROJECT_ID" not in configuration_data
+                    or configuration_data.get("PROJECT_ID") == ""
+                    or "REDIRECT_URI" not in configuration_data
+                    or configuration_data.get("REDIRECT_URI") == ""
+                ):
+                    is_not_configured = True
 
                 if is_not_configured:
                     return make_response({"error": "The application has not been configured"}, 400)

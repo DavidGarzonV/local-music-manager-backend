@@ -1,10 +1,10 @@
 import jwt
 import datetime
-from app.config import SECRET_KEY
 
+from app.common.environments import SECRET_KEY
 
 def generate_jwt_token(payload={}, expiration_days=1):
-    payload["exp"] = datetime.datetime.utcnow() + datetime.timedelta(
+    payload["exp"] = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
         days=expiration_days
     )
     encoded_jwt = jwt.encode(payload, SECRET_KEY, algorithm="HS256")

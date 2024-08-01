@@ -1,10 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-
 a = Analysis(
     ["entrypoint.py"],
     pathex=[
-        "./env/Lib/site-packages",
+        "./venv/Lib/site-packages",
         "./app"
     ],
     binaries=[],
@@ -18,9 +17,9 @@ a = Analysis(
             "app/config_files",
         ),
         (
-            "./app/logs",
-            "app/logs",
-        )
+            "./.venv/Lib/site-packages/ytmusicapi/locales",
+            "ytmusicapi/locales",
+        ),
     ],
     hiddenimports=[],
     hookspath=[],

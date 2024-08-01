@@ -1,13 +1,14 @@
 from app.common.json import load_data_from_json, save_data_to_json
-from app.config import CREDENTIALS_FILE, GOOGLE_SCOPES, CLIENT_CONFIG
-
-CLIENT_ID = CLIENT_CONFIG["web"]["client_id"]
-CLIENT_SECRET = CLIENT_CONFIG["web"]["client_secret"]
+from app.config import CREDENTIALS_FILE, GOOGLE_SCOPES, get_client_config
 
 def credentials_to_dict(credentials):
     return {"token": credentials.token, "refresh_token": credentials.refresh_token}
 
 def credentials_from_dict(credentials):
+    CLIENT_CONFIG = get_client_config()
+    CLIENT_ID = CLIENT_CONFIG["web"]["client_id"]
+    CLIENT_SECRET = CLIENT_CONFIG["web"]["client_secret"]
+
     credentials["client_id"] = CLIENT_ID
     credentials["client_secret"] = CLIENT_SECRET
     credentials["scopes"] = GOOGLE_SCOPES
@@ -22,7 +23,7 @@ def validate_credentials():
 
 
 def save_credentials(credentials):
-    save_data_to_json(credentials, CREDENTIALS_FILE)
+    return save_data_to_json(credentials, CREDENTIALS_FILE)
 
 
 def get_credentials():
