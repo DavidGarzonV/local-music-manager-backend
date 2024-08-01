@@ -4,6 +4,7 @@ from flask import Flask, jsonify
 from app.common.code_logger import APP_LOGGER
 from app.common.environments import ENABLED_ORIGIN, SECRET_KEY
 from app.common.error_handling import UnauthorizedException
+from app.common.utils import create_folder_if_not_exists
 from app.config import CONFIGURATION_FILE, CREDENTIALS_FILE, OAUTH_FILE
 from app.modules.auth.api_v1.utils import reset_login
 from app.modules.playlists.api_v1.resources import playlists_v1_bp
@@ -14,6 +15,8 @@ from flask_cors import CORS
 from app.common.interceptors import configure_required, token_required
 
 def create_config_files(oauth_file, credentials_file, configuration_file):
+    create_folder_if_not_exists('config_files')
+
     try:
         f = open(oauth_file, 'x')
         f.write("{}")

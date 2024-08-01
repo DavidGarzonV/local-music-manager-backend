@@ -2,10 +2,9 @@ import logging
 import datetime as dt
 import os
 from app.common.environments import IS_DEVELOPMENT
+from app.common.utils import create_folder_if_not_exists
 
-folder = os.path.join(os.path.dirname(__file__), "../logs/")
-if not os.path.exists(folder):
-    os.makedirs(folder)
+create_folder_if_not_exists("logs")
 
 current_date = dt.date.today()
 

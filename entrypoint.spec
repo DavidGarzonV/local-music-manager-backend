@@ -13,10 +13,6 @@ a = Analysis(
             ".",
         ),
         (
-            "./app/config_files",
-            "app/config_files",
-        ),
-        (
             "./.venv/Lib/site-packages/ytmusicapi/locales",
             "ytmusicapi/locales",
         ),

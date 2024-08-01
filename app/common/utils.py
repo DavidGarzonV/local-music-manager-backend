@@ -52,3 +52,8 @@ def generate_expired_at(expires_in):
 
     return time.mktime(expired_at.timetuple())
 
+def create_folder_if_not_exists(folder):
+    folder_path = os.path.join(os.path.dirname(__file__), "../"+folder)
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
