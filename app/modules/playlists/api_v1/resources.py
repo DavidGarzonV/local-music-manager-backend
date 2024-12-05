@@ -1,5 +1,12 @@
-from flask import request, Blueprint
-from app.common.yt_music import create_playlist, get_playlist_tracks, get_youtube_music_playlists
+from flask import Blueprint, request
+
+from app.common.yt_music import (
+    create_playlist,
+    delete_songs_in_playlist,
+    get_playlist_tracks,
+    get_songs_by_playlist,
+    get_youtube_music_playlists,
+)
 
 playlists_v1_bp = Blueprint("playlists_v1_bp", __name__)
 
@@ -62,3 +69,24 @@ def get_playlist(id):
         "Success": True,
         "Tracks": tracks,
     }
+
+
+@playlists_v1_bp.route("/songs/<string:id>", methods=["GET"])
+def get_playlist_songs(id):
+    only_songs = request.args.get("only_songs", False)
+    include_id = request.args.get("include_id", False)
+    tracks = get_songs_by_playlist(id, only_songs, include_id)
+
+    return {
+        "Success": True,
+        "Songs": tracks,
+    }
+
+
+@playlists_v1_bp.route("/songs/<string:playlist_id>", methods=["DELETE"])
+def delete_songs(playlist_id):
+    data = request.get_json()
+    songs_list = data.get("songs")
+
+    deleted = delete_songs_in_playlist(playlist_id, songs_list)
+    return {"Success": deleted}

@@ -1,4 +1,5 @@
 from ytmusicapi import YTMusic
+
 from app.common.code_logger import APP_LOGGER
 from app.common.environments import IS_DEVELOPMENT
 from app.common.error_handling import UnauthorizedException
@@ -7,6 +8,7 @@ from app.config import OAUTH_FILE
 from app.modules.auth.api_v1.utils import refresh_token_from_session
 
 similarity_ratio = 0.6
+
 
 def catch_ytmusic_exceptions(exception: Exception):
     error_reason = exception.args[0]
@@ -261,6 +263,51 @@ def get_playlist_tracks(playlist_id):
         return []
 
 
+def get_songs_by_playlist(playlist_id, only_songs=False, include_id=False):
+    ytmusic = create_youtube_music_session()
+    try:
+        playlist = ytmusic.get_playlist(playlist_id, None)
+        tracks = playlist.get("tracks", [])
+        if only_songs:
+            if include_id:
+                tracks = [
+                    x["title"]
+                    + " - "
+                    + ", ".join([y["name"] for y in x["artists"]])
+                    + " ("
+                    + x["videoId"]
+                    + " - "
+                    + x["setVideoId"]
+                    + ")"
+                    for x in tracks
+                ]
+            else:
+                tracks = [
+                    x["title"] + " - " + ", ".join([y["name"] for y in x["artists"]])
+                    for x in tracks
+                ]
+            tracks = sorted(tracks, key=lambda x: x)
+        else:
+            tracks = [
+                {
+                    "videoId": x["videoId"],
+                    "title": x["title"],
+                    "artists": x["artists"],
+                    "duration": x["duration"],
+                    "thumbnails": x["thumbnails"],
+                    "setVideoId": x["setVideoId"],
+                }
+                for x in tracks
+            ]
+            tracks = sorted(tracks, key=lambda x: x["title"])
+
+        return tracks
+    except Exception as e:
+        APP_LOGGER.error("Error getting playlist songs: ")
+        catch_ytmusic_exceptions(e)
+        return []
+
+
 def get_song(video_id):
     ytmusic = create_youtube_music_session()
     try:
@@ -278,5 +325,17 @@ def create_playlist(title, description, privacy_status="PRIVATE"):
         return playlist_id
     except Exception as e:
         APP_LOGGER.error("Error creating playlist: ")
+        catch_ytmusic_exceptions(e)
+        return False
+
+
+def delete_songs_in_playlist(playlist_id, songs_list):
+    ytmusic = create_youtube_music_session()
+    try:
+        ytmusic.remove_playlist_items(playlist_id, songs_list)
+
+        return True
+    except Exception as e:
+        APP_LOGGER.error("Error deleting song: ")
         catch_ytmusic_exceptions(e)
         return False

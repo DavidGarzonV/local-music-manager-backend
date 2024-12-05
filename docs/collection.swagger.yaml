@@ -63,6 +63,115 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /api/v1/playlists/songs/{id}:
+    get:
+      tags:
+        - Playlists
+      summary: Get Playlist Songs
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+          example: PLmdUBVgDeFM0YbishmMv1yOAaeFJDphhD
+        - name: only_songs
+          in: query
+          schema:
+            type: boolean
+          required: false
+          example: true
+        - name: include_id
+          in: query
+          schema:
+            type: boolean
+          required: false
+          example: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: 
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: HKNqyiV38ss
+                        title:
+                          type: string
+                          example: Addicted To You
+                        artists:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                example: Avicci
+                              id:
+                                type: string
+                                example: UCoSqQhr7x3sMUmrEwwdUU_A
+                        duration:
+                          type: string
+                          example: "2:40"
+                        setVideoId: 
+                          type: string
+                          example: 532BB0B422FBC7EC
+                        thumbnails:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              url:
+                                type: string
+                                example: https://i.ytimg.com/vi/HKNqyiV38ss/mqdefault.jpg
+                              height:
+                                type: integer
+                                example: 180
+                              width:
+                                type: integer
+                                example: 320
+                  - type: array
+                    items:
+                      type: string
+                      example: Addicted To You - Avicci
+    delete:
+      tags:
+        - Playlists
+      summary: Delete songs from playlist
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+          example: PLmdUBVgDeFM0YbishmMv1yOAaeFJDphhD
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                songs:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      videoId:
+                        type: string
+                        example: HKNqyiV38ss
+                      setVideoId:
+                        type: string
+                        example: 4716165A37EB7BE7
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
   /api/v1/local-files:
     get:
       tags:

@@ -3,7 +3,7 @@ import secrets
 from dotenv import load_dotenv
 from app.common.utils import get_env_path
 
-load_dotenv(dotenv_path=get_env_path())
+load_dotenv(dotenv_path=get_env_path(), verbose=True, override=True)
 
 ENVIRONMENT = os.getenv("ENVIRONMENT")
 

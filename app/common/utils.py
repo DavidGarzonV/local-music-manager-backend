@@ -1,8 +1,10 @@
-from difflib import SequenceMatcher
+import datetime
+import json
 import os
 import sys
-import datetime
 import time
+from difflib import SequenceMatcher
+
 
 def if_song_has_title(song):
     if isinstance(song, str):
@@ -52,8 +54,18 @@ def generate_expired_at(expires_in):
 
     return time.mktime(expired_at.timetuple())
 
+
 def create_folder_if_not_exists(folder):
-    folder_path = os.path.join(os.path.dirname(__file__), "../"+folder)
+    folder_path = os.path.join(os.path.dirname(__file__), "../" + folder)
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
+
+
+def check_if_file_is_empty(file_path):
+    try:
+        f = open(file_path)
+        data_json = json.load(f)
+        return len(data_json) == 0
+    except Exception:
+        return True
