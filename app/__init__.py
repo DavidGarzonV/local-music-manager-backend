@@ -50,7 +50,7 @@ def create_app():
         resources={
             r"/api/*": {
                 "origins": ENABLED_ORIGIN,
-                "methods": ["GET", "POST", "OPTIONS", "HEAD"],
+                "methods": ["GET", "POST", "OPTIONS", "HEAD", "DELETE"],
                 "allow_headers": ["Authorization, Content-Type"],
             }
         },
